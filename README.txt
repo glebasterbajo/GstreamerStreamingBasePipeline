@@ -10,8 +10,10 @@ shell: $ gst-inspect-1.0 <element name>
 # Gtsreamer Python Bindings
 https://lazka.github.io/pgi-docs/
 
+### FILE SERVER PIPELINE ###
+gst-launch-1.0 -e filesrc location="2019_azerbaijan_grand_prix.mp4" ! qtdemux name=demux demux.video_0 ! queue ! decodebin ! videoconvert ! x264enc dct8x8=1 tune=zerolatency ! rtph264pay pt=96 ! multiudpsink name=videoudp sync=true auto-multicast=false clients="192.168.1.123:6000" demux.audio_0 ! queue ! decodebin ! udioconvert ! audio/x-raw, format=S24BE, layout=interleaved, rate=44100, channels=1 ! queue max-size-bytes=655360 max-size-time=62500000 ! rtpL24pay pt=98 ! multiudpsink name=audioudp sync=true auto-multicast=false clients="192.168.1.123:6002"
 
-### SERVER PIPELINE ###
+### WEBCAM SERVER PIPELINE ###
 gst-launch-1.0 -e v4l2src do-timestamp=true device=/dev/video0 ! image/jpeg, width=800, height=600 ! decodebin ! videoconvert ! x264enc dct8x8=1 tune=zerolatency ! rtph264pay pt=96 ! multiudpsink name=videoudp sync=true auto-multicast=false clients="192.168.1.123:6000" alsasrc do-timestamp=true ! audioconvert ! audio/x-raw, format=S24BE, layout=interleaved, rate=44100, channels=1 ! queue max-size-bytes=655360 max-size-time=62500000 ! rtpL24pay pt=98 ! multiudpsink name=audioudp sync=true auto-multicast=false clients="192.168.1.123:6002"
 
 ### CLIENT PIPELINE ###
